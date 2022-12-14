@@ -9,6 +9,12 @@ namespace TabloidCLI.UserInterfaceManagers
 
         public IUserInterfaceManager Execute()
         {
+            Console.WriteLine(" _        __     __");
+            Console.WriteLine("| |  _   / /___ / /__________________ ___");
+            Console.WriteLine("| | / | / / _  / / ___/ __  / __  __`/ _ `");
+            Console.WriteLine("| |/  |/ /  __/ / /__/ /_/ / / / / //  __/");
+            Console.WriteLine("|___/|__/____/_/____/_____/_/_/_/_//____/");
+            Console.WriteLine("");
             Console.WriteLine("Main Menu");
 
             Console.WriteLine(" 1) Journal Management");
