@@ -62,6 +62,42 @@ namespace TabloidCLI
                 }
             }
         }
-        
+
+        public void Update(Journal journal)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Journal 
+                                           SET Title = @Title,
+                                               Content = @Content
+                                         WHERE id = @id";
+
+                    cmd.Parameters.AddWithValue("@Title", journal.Title);
+                    cmd.Parameters.AddWithValue("@Content", journal.Content);
+                    cmd.Parameters.AddWithValue("@id", journal.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Journal WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }
