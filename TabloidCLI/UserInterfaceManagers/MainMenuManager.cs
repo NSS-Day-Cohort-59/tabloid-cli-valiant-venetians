@@ -1,5 +1,7 @@
 ﻿using System;
 
+using TabloidCLI.Models;
+
 namespace TabloidCLI.UserInterfaceManagers
 {
     public class MainMenuManager : IUserInterfaceManager
@@ -9,12 +11,10 @@ namespace TabloidCLI.UserInterfaceManagers
 
         public IUserInterfaceManager Execute()
         {
-            Console.WriteLine(" _        __     __");
-            Console.WriteLine("| |  _   / /___ / /__________________ ___");
-            Console.WriteLine("| | / | / / _  / / ___/ __  / __  __`/ _ `");
-            Console.WriteLine("| |/  |/ /  __/ / /__/ /_/ / / / / //  __/");
-            Console.WriteLine("|___/|__/____/_/____/_____/_/_/_/_//____/");
-            Console.WriteLine("");
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine(ASCII.Welcome);
+            Console.WriteLine();
             Console.WriteLine("Main Menu");
 
             Console.WriteLine(" 1) Journal Management");
@@ -23,6 +23,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 4) Post Management");
             Console.WriteLine(" 5) Tag Management");
             Console.WriteLine(" 6) Search by Tag");
+            Console.WriteLine(" 7) Edit Theme");
             Console.WriteLine(" 0) Exit");
 
             Console.Write("> ");
@@ -30,13 +31,17 @@ namespace TabloidCLI.UserInterfaceManagers
             switch (choice)
             {
                 case "1": return new JournalManager(this, CONNECTION_STRING);
-                case "2": throw new NotImplementedException();
+                case "2": return new BlogManager(this, CONNECTION_STRING);
                 case "3": return new AuthorManager(this, CONNECTION_STRING);
                 case "4": return new PostManager(this, CONNECTION_STRING);
                 case "5": return new TagManager(this, CONNECTION_STRING);
                 case "6": return new SearchManager(this, CONNECTION_STRING);
+                case "7":
+                    ThemeEditor.ExecuteMenu();
+                    return this;
                 case "0":
                     Console.WriteLine("Good bye");
+                    Console.ResetColor();
                     return null;
                 default:
                     Console.WriteLine("Invalid Selection");
