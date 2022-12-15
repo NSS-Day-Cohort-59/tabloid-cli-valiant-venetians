@@ -31,12 +31,23 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 2) List All Posts");
             Console.WriteLine(" 3) Edit Post");
             Console.WriteLine(" 4) Remove Post");
+            Console.WriteLine(" 5) Post Details");
             Console.WriteLine(" 0) Go Back");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
             switch (choice)
             {
+                case "5":
+                    Post post = Choose();
+                    if (post == null)
+                    {
+                        return this;
+                    }
+                    else
+                    {
+                        return new PostDetailManager(this, _connectionString, post.Id);
+                    }
                 case "4":
                     Remove();
                     return this;
