@@ -173,6 +173,40 @@ namespace TabloidCLI.Repositories
                 }
             }
         }
+
+        public List<Blog> FilteredBlogs(int AuthorId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT DISTINCT b.*
+                                        FROM Blog b
+                                        LEFT JOIN Post p ON p.BlogId = b.Id
+                                        LEFT JOIN Author a ON p.AuthorId = a.Id
+                                        WHERE a.Id = @AuthorId";
+                    cmd.Parameters.AddWithValue("@AuthorId", AuthorId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        List<Blog> blogs = new List<Blog>();
+
+                        while (reader.Read())
+                        {
+                            Blog newBlog = new Blog()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Url = reader.GetString(reader.GetOrdinal("URL")),
+                            };
+                            blogs.Add(newBlog);
+                        }
+
+                        return blogs;
+                    }
+                }
+            }
+        }
     }
 }
 

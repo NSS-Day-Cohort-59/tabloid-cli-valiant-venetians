@@ -9,6 +9,8 @@ namespace TabloidCLI.UserInterfaceManagers
     {
         private readonly IUserInterfaceManager _parentUI;
         private PostRepository _postRepository;
+        private AuthorRepository _authorRepository;
+        private BlogRepository _blogRepository;
         private string _connectionString;
 
         public PostManager(IUserInterfaceManager parentUI, string connectionString)
@@ -16,8 +18,12 @@ namespace TabloidCLI.UserInterfaceManagers
             _parentUI = parentUI;
             _postRepository = new PostRepository(connectionString);
             _connectionString = connectionString;
+            _authorRepository = new AuthorRepository(connectionString);
+            _blogRepository = new BlogRepository(connectionString);
         }
 
+        
+        
         public IUserInterfaceManager Execute()
         {
             Console.WriteLine("Post Menu");
@@ -61,6 +67,32 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.Write("Title: ");
             post.Title = Console.ReadLine();
 
+            Console.Write("URL: ");
+               post.Url = Console.ReadLine();
+
+            Console.Write("Author: ");
+            List<Author> authors =
+                _authorRepository.GetAll();
+            for (int i = 0; i < authors.Count; i++)
+            {
+                Author author = authors[i];
+                Console.WriteLine($"{i+1}) {author.FullName}");
+            }
+                Console.Write(">");
+                post.Author = authors[int.Parse(Console.ReadLine()) -1];
+           
+            Console.Write("Blog: ");
+            List<Blog> blogs =
+                _blogRepository.FilteredBlogs(post.Author.Id);
+            for (int i = 0; i < blogs.Count; i++)
+            {
+                Blog blog = blogs[i];
+                Console.WriteLine($"{i + 1}) {blog.Title}");
+            }
+            Console.Write(">");
+                post.Blog = blogs[int.Parse(Console.ReadLine()) -1];
+
+
 
             post.PublishDateTime = DateTime.Now;
 
@@ -93,10 +125,10 @@ namespace TabloidCLI.UserInterfaceManagers
             for (int i = 0; i < posts.Count; i++)
             {
                 Post post = posts[i];
-                Console.WriteLine($" {i + 1}) {post.Title}");
-                Console.WriteLine($" {i + 1}) {post.Url}");
-                Console.WriteLine($" {i + 1}) {post.Author}");
-                Console.WriteLine($" {i + 1}) {post.Blog}");
+                Console.WriteLine($@" {i + 1} {post.Title}) 
+{post.Url}
+{post.Author.Id} 
+{post.Blog.Id}");
             }
             Console.Write("> ");
 
