@@ -43,8 +43,7 @@ namespace TabloidCLI.UserInterfaceManagers
                         }
                         else
                         {
-                            throw new NotImplementedException();
-                            //return new BlogDetailManager(this, _connectionString, blog.Id);
+                            return new BlogDetailManager(this, _connectionString, blog.Id);
                         }
                     case "3":
                         Add();
