@@ -61,15 +61,6 @@ namespace TabloidCLI.UserInterfaceManagers
             }
         }
 
-        private void List()
-        {
-            List<Author> authors = _authorRepository.GetAll();
-            foreach (Author author in authors)
-            {
-                Console.WriteLine(author);
-            }
-        }
-
         private Author Choose(string prompt = null)
         {
             if (prompt == null)
@@ -98,6 +89,15 @@ namespace TabloidCLI.UserInterfaceManagers
             {
                 Console.WriteLine("Invalid Selection");
                 return null;
+            }
+        }
+
+        private void List()
+        {
+            List<Author> authors = _authorRepository.GetAll();
+            foreach (Author author in authors)
+            {
+                Console.WriteLine(author);
             }
         }
 
