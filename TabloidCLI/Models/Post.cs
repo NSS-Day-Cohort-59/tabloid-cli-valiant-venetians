@@ -16,5 +16,6 @@ namespace TabloidCLI.Models
         {
             return Title;
         }
+        public List<Tag> Tags { get; set; } = new List<Tag>();
     }
 }
