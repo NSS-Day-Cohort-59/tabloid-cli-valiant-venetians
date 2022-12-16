@@ -124,22 +124,25 @@ namespace TabloidCLI.UserInterfaceManagers
 
         private Post Choose(string prompt = null)
         {
+            Console.Clear();
             if (prompt == null)
             {
                 prompt = "Please choose a Post:";
             }
 
             Console.WriteLine(prompt);
+            Console.WriteLine();
 
             List<Post> posts = _postRepository.GetAll();
 
             for (int i = 0; i < posts.Count; i++)
             {
                 Post post = posts[i];
-                Console.WriteLine($@" {i + 1} {post.Title}) 
-{post.Url}
-{post.Author.Id} 
-{post.Blog.Id}");
+                Console.WriteLine($@"{i + 1}) {post.Title} 
+URL: {post.Url}
+Author Id: {post.Author.Id} 
+Blog Id: {post.Blog.Id}");
+                Console.WriteLine();
             }
             Console.Write("> ");
 
