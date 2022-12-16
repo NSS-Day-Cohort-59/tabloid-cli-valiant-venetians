@@ -22,9 +22,9 @@ namespace TabloidCLI.UserInterfaceManagers
             _results.Add(result);
         }
 
-        public void Display()
+        public void Display(bool displayTitle)
         {
-            Console.WriteLine(Title);
+            if (displayTitle) Console.WriteLine(Title);
 
             foreach (T result in _results)
             {
@@ -32,6 +32,6 @@ namespace TabloidCLI.UserInterfaceManagers
             }
 
             Console.WriteLine();
-        }
+        }        
     }
 }
