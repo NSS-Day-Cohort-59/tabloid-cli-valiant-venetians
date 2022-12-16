@@ -69,6 +69,38 @@ namespace TabloidCLI
                 }
             }
         }
-    }
+        public void Insert(Note note)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Note (Title, Content, CreateDateTime, PostId)
+                                                     VALUES (@Title, @Content, @CreateDateTime, @PostId)";
+                    cmd.Parameters.AddWithValue("@Title", note.Title);
+                    cmd.Parameters.AddWithValue("@Content", note.Content);
+                    cmd.Parameters.AddWithValue("@PostId", note.Post.Id);
+                    cmd.Parameters.AddWithValue("@CreateDateTime", note.CreateDateTime);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Note WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+    } 
 }
 

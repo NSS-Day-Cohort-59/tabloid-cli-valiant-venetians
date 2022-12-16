@@ -41,8 +41,10 @@ namespace TabloidCLI.UserInterfaceManagers
                     ListNotes();
                     return this;
                 case "2":
+                    Add();
                     return this;
                 case "3":
+                    Remove();
                     return this;
                 case "0":
                     return _parentUI;
@@ -74,6 +76,62 @@ namespace TabloidCLI.UserInterfaceManagers
 
             Console.Write("Press any key to continue");
             Console.ReadKey();
+        }
+        private void Add()
+        {
+            Console.WriteLine("New Note");
+            Note note = new Note();
+
+            Console.Write(" Title: ");
+            note.Title = Console.ReadLine();
+
+            Console.Write(" Note Content: ");
+            note.Content = Console.ReadLine();
+
+            note.CreateDateTime= DateTime.Now;
+
+            note.Post = new Post { Id = _postId };
+
+            _noteRepository.Insert(note);
+        }
+
+        private Note Choose(string prompt = null)
+        {
+            if (prompt == null)
+            {
+                prompt = "Please choose a Note:";
+            }
+
+            Console.WriteLine(prompt);
+
+            List<Note> notes = _noteRepository.GetAll();
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                Note note = notes[i];
+                Console.WriteLine($" {i + 1}) {note.Title}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            try
+            {
+                int choice = int.Parse(input);
+                return notes[choice - 1];
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Invalid Selection");
+                return null;
+            }
+        }
+        private void Remove()
+        {
+            Note noteToDelete = Choose("Which note would you like to remove?");
+            if (noteToDelete != null)
+            {
+                _noteRepository.Delete(noteToDelete.Id);
+            }
         }
     }
 }
