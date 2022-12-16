@@ -37,8 +37,8 @@ namespace TabloidCLI.Repositories
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             Url = reader.GetString(reader.GetOrdinal("Url")),
                             PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-                            Author = new Author {Id = reader.GetInt32(reader.GetOrdinal("AuthorId"))},
-                            Blog = new Blog {Id = reader.GetInt32(reader.GetOrdinal("BlogId"))}
+                            Author = new Author { Id = reader.GetInt32(reader.GetOrdinal("AuthorId")) },
+                            Blog = new Blog { Id = reader.GetInt32(reader.GetOrdinal("BlogId")) }
                         };
                         posts.Add(post);
                     }
@@ -122,7 +122,7 @@ namespace TabloidCLI.Repositories
                     cmd.Parameters.AddWithValue("@PublishDateTime", post.PublishDateTime);
                     cmd.Parameters.AddWithValue("@AuthorId", post.Author.Id);
                     cmd.Parameters.AddWithValue("@BlogId", post.Blog.Id);
-                
+
 
                     cmd.ExecuteNonQuery();
                 }
@@ -199,6 +199,40 @@ namespace TabloidCLI.Repositories
             }
         }
 
+        public void InsertNote(Post post, Note note)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO PostTag (PostId, NoteId)
+                                                       VALUES (@postId, @noteId)";
+                    cmd.Parameters.AddWithValue("@postId", post.Id);
+                    cmd.Parameters.AddWithValue("@noteId", note.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteNote(int postId, int noteId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM PostTag 
+                                         WHERE PostId = @postId AND 
+                                               NoteId = @noteId";
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@noteId", noteId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public Post Get(int id)
         {
             using (SqlConnection conn = Connection)
@@ -211,10 +245,14 @@ namespace TabloidCLI.Repositories
                                                p.Url,
                                                p.PublishDateTime,
                                                t.Id AS TagId,
-                                               t.Name
+                                               t.Name,
+                                               n.Id AS NoteId,
+                                               n.Title,
+                                               n.Content
                                           FROM Post p 
                                                LEFT JOIN PostTag pt on p.Id = pt.PostId
                                                LEFT JOIN Tag t on t.Id = pt.TagId
+                                               LEFT JOIN Note n on n.PostId = p.Id
                                          WHERE p.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
@@ -243,14 +281,22 @@ namespace TabloidCLI.Repositories
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                             });
                         }
+                        if (!reader.IsDBNull(reader.GetOrdinal("NoteId")))
+                        {
+                            post.Notes.Add(new Note()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("NoteId")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Content = reader.GetString(reader.GetOrdinal("Content")),
+                            });
+                        }
                     }
-
                     reader.Close();
 
                     return post;
                 }
             }
-        }
 
+        }
     }
 }
