@@ -8,15 +8,19 @@ namespace TabloidCLI.UserInterfaceManagers
     internal class PostDetailManager : IUserInterfaceManager
     {
         private IUserInterfaceManager _parentUI;
+        private NoteRepository _noteRepository;
         private PostRepository _postRepository;
         private TagRepository _tagRepository;
         private int _postId;
+        private string _connectionString;
 
         public PostDetailManager(IUserInterfaceManager parentUI, string connectionString, int postId)
         {
             _parentUI = parentUI;
             _postRepository = new PostRepository(connectionString);
             _tagRepository = new TagRepository(connectionString);
+            _connectionString = connectionString;
+            _noteRepository = new NoteRepository(connectionString);
             _postId = postId;
         }
 
@@ -44,8 +48,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     RemoveTag();
                     return this;
                 case "4":
-
-                    return this;
+                    return new NoteManager(this, _connectionString, post.Id);
                 case "0":
                     return _parentUI;
                 default:
@@ -89,7 +92,7 @@ namespace TabloidCLI.UserInterfaceManagers
                 Tag tag = tags[choice - 1];
                 _postRepository.InsertTag(post, tag);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Invalid Selection. Won't add any tags.");
             }
@@ -116,7 +119,7 @@ namespace TabloidCLI.UserInterfaceManagers
                 Tag tag = tags[choice - 1];
                 _postRepository.DeleteTag(post.Id, tag.Id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Invalid Selection. Won't remove any tags.");
             }
